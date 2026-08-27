@@ -1,411 +1,96 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Особое приглашение 💖</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Карточки с изображениями</title>
   <style>
-    :root {
-      --bg-pink: #ffe4e8;
-      --card-pink: #fff0f3;
-      --accent-pink: #ff4d6d;
-      --dark-pink: #590d22;
-      --btn-grad: linear-gradient(135deg, #ff758f, #ff4d6d);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    }
-
+    /* Общие стили страницы */
     body {
-      background: linear-gradient(135deg, #ffccd5, #ffb3c1, #ff8fa3);
-      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #fdf0f4;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 15px;
-      overflow-x: hidden;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
     }
 
-    /* Экран телефона */
-    .phone {
-      width: 100%;
-      max-width: 380px;
-      height: 720px;
-      background: #fff5f7;
-      border-radius: 40px;
-      box-shadow: 0 20px 40px rgba(164, 19, 60, 0.25), 0 0 0 10px #ffb3c1;
-      border: 4px solid #ffffff;
+    /* Контейнер списка */
+    .list-container {
       display: flex;
       flex-direction: column;
-      position: relative;
-      overflow: hidden;
+      gap: 14px;
+      width: 100%;
+      max-width: 420px;
     }
 
-    /* Верхняя панель смартфона */
-    .phone-header {
-      padding: 12px 20px 8px;
+    /* Стили отдельной карточки */
+    .card {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--dark-pink);
-      background: rgba(255, 245, 247, 0.9);
-      backdrop-filter: blur(5px);
-      z-index: 10;
-    }
-
-    .notch {
-      width: 110px;
-      height: 18px;
-      background: var(--dark-pink);
-      border-radius: 10px;
-      position: absolute;
-      top: 8px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    /* Область сообщений */
-    .chat-container {
-      flex: 1;
-      padding: 15px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      scroll-behavior: smooth;
-    }
-
-    .chat-container::-webkit-scrollbar {
-      width: 4px;
-    }
-    .chat-container::-webkit-scrollbar-thumb {
-      background: #ffb3c1;
-      border-radius: 4px;
-    }
-
-    /* Карточки уведомлений */
-    .notification {
-      background: var(--card-pink);
+      justify-content: space-between;
+      background-color: #fff5f7;
       border: 1.5px solid #ffccd5;
-      border-radius: 20px;
-      padding: 14px;
-      box-shadow: 0 8px 20px rgba(255, 77, 109, 0.12);
-      animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-      opacity: 0;
-      transform: translateY(20px) scale(0.95);
-      position: relative;
+      border-radius: 30px;
+      padding: 14px 22px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
     }
 
-    @keyframes popIn {
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
+    /* Левая часть (иконка + текст) */
+    .card-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
-    /* Первая карточка - анимация вибрации получения */
-    .vibrate-card {
-      animation: popIn 0.4s forwards, phoneVibe 0.6s ease-in-out 0.4s 2;
+    /* Иконки image_481 и image_482 */
+    .card-icon {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      flex-shrink: 0; /* Фиксирует иконку и предотвращает наложение текста */
     }
 
-    @keyframes phoneVibe {
-      0%, 100% { transform: translate(0, 0) rotate(0deg); }
-      20% { transform: translate(-3px, 3px) rotate(-1deg); }
-      40% { transform: translate(3px, -3px) rotate(1deg); }
-      60% { transform: translate(-3px, -3px) rotate(-1deg); }
-      80% { transform: translate(3px, 3px) rotate(1deg); }
-    }
-
-    /* Медиаконтейнер с анимациями */
-    .img-wrapper {
-      position: relative;
-      width: 100%;
-      border-radius: 14px;
-      overflow: hidden;
-      margin-bottom: 8px;
-    }
-
-    .img-wrapper img {
-      width: 100%;
-      display: block;
-      border-radius: 14px;
-    }
-
-    /* Анимация 1: Сердечки скачут */
-    .bouncing-heart {
-      position: absolute;
-      font-size: 22px;
-      animation: heartBounce 1.2s infinite ease-in-out alternate;
-      pointer-events: none;
-    }
-    .heart-1 { top: 10%; left: 15%; animation-delay: 0s; }
-    .heart-2 { top: 20%; right: 20%; animation-delay: 0.3s; }
-    .heart-3 { bottom: 15%; left: 45%; animation-delay: 0.6s; }
-
-    @keyframes heartBounce {
-      0% { transform: translateY(0) scale(1); }
-      100% { transform: translateY(-12px) scale(1.2); }
-    }
-
-    /* Анимация 2: Деревья шевелятся */
-    .swaying-tree {
-      position: absolute;
-      top: 5%;
-      right: 5%;
-      width: 30%;
-      height: 40%;
-      pointer-events: none;
-      animation: treeSway 2.5s infinite ease-in-out alternate;
-      transform-origin: bottom center;
-    }
-
-    @keyframes treeSway {
-      0% { transform: rotate(-3deg) skewX(-2deg); }
-      100% { transform: rotate(4deg) skewX(2deg); }
-    }
-
-    /* Анимация 2: Глазки котиков (моргание/подмигивание) */
-    .cat-eye {
-      position: absolute;
-      background: #000;
-      border-radius: 50%;
-      pointer-events: none;
-    }
-    .pink-cat-eye {
-      top: 39%;
-      left: 28.5%;
-      width: 12px;
-      height: 12px;
-      animation: wink 3s infinite;
-    }
-    .blue-cat-eye {
-      top: 39%;
-      left: 54.5%;
-      width: 12px;
-      height: 12px;
-      animation: blink 2.5s infinite;
-    }
-
-    @keyframes blink {
-      0%, 90%, 100% { transform: scaleY(1); }
-      95% { transform: scaleY(0.1); }
-    }
-    @keyframes wink {
-      0%, 85%, 100% { transform: scaleY(1); }
-      90% { transform: scaleY(0.05); }
-    }
-
-    /* Текст приглашения */
-    .invitation-text {
-      color: var(--dark-pink);
-      font-size: 14px;
-      line-height: 1.5;
-      white-space: pre-line;
+    /* Текст внутри карточки */
+    .card-title {
+      font-size: 20px;
       font-weight: 500;
+      color: #000000;
     }
 
-    .event-details {
-      background: #ffb3c1;
-      color: var(--dark-pink);
-      font-weight: 700;
-      padding: 12px;
-      border-radius: 12px;
-      text-align: center;
-      font-size: 15px;
-      line-height: 1.4;
-    }
-
-    /* Кнопки */
-    .btn {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 25px;
-      background: var(--btn-grad);
-      color: white;
-      font-weight: bold;
-      font-size: 15px;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(255, 77, 109, 0.3);
-      transition: transform 0.2s, box-shadow 0.2s;
-      margin-top: 10px;
-    }
-
-    .btn:active {
-      transform: scale(0.96);
-    }
-
-    /* Веселая вибрация для кнопки Урааа! */
-    .btn-vibe {
-      animation: btnWiggle 0.8s infinite ease-in-out;
-    }
-
-    @keyframes btnWiggle {
-      0% { transform: rotate(0deg) scale(1); }
-      25% { transform: rotate(-3deg) scale(1.02); }
-      50% { transform: rotate(3deg) scale(1.02); }
-      75% { transform: rotate(-2deg) scale(1.02); }
-      100% { transform: rotate(0deg) scale(1); }
-    }
-
-    /* Частицы поцелуйчиков */
-    .kiss-particle {
-      position: absolute;
-      font-size: 24px;
-      pointer-events: none;
-      z-index: 99;
-      animation: floatKiss 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-    }
-
-    @keyframes floatKiss {
-      0% {
-        opacity: 1;
-        transform: translate(0, 0) scale(0.5) rotate(0deg);
-      }
-      100% {
-        opacity: 0;
-        transform: translate(var(--dx), var(--dy)) scale(1.8) rotate(var(--dr));
-      }
-    }
-
-    .hidden {
-      display: none !important;
+    /* Правая часть карточки */
+    .card-right {
+      display: flex;
+      align-items: center;
+      font-size: 18px;
     }
   </style>
 </head>
 <body>
 
-  <div class="phone" id="phone">
-    <!-- Шапка смартфона -->
-    <div class="notch"></div>
-    <div class="phone-header">
-      <span>16:00</span>
-      <span>💖 100%</span>
+  <div class="list-container">
+    
+    <!-- Карточка 1 -->
+    <div class="card">
+      <div class="card-left">
+        <img src="image_481.png" alt="Иконка" class="card-icon">
+        <span class="card-title">Приглашение 💖 🔻</span>
+      </div>
+      <div class="card-right">💕</div>
     </div>
 
-    <!-- Чат / Лента уведомлений -->
-    <div class="chat-container" id="chat">
-      
-      <!-- Этап 1: Приглашение с прыгающими сердечками -->
-      <div class="notification vibrate-card" id="step1">
-        <div class="img-wrapper">
-          <img src="image 482.jpg" alt="Приглашение" />
-          <span class="bouncing-heart heart-1">💖</span>
-          <span class="bouncing-heart heart-2">💕</span>
-          <span class="bouncing-heart heart-3">💗</span>
-        </div>
-        <button class="btn" id="btn-accept" onclick="acceptStep1()">Принять</button>
+    <!-- Карточка 2 -->
+    <div class="card">
+      <div class="card-left">
+        <img src="image_482.png" alt="Иконка" class="card-icon">
+        <span class="card-title">Котики и винил</span>
       </div>
-
-      <!-- Этап 2: Изображение с котиками и деревьями -->
-      <div class="notification hidden" id="step2-img">
-        <div class="img-wrapper">
-          <img src="image 481.jpg" alt="Котики и винил" />
-          <div class="swaying-tree"></div>
-          <div class="cat-eye pink-cat-eye"></div>
-          <div class="cat-eye blue-cat-eye"></div>
-        </div>
-      </div>
-
-      <!-- Этап 3: Текст приглашения + кнопка Урааа! -->
-      <div class="notification hidden" id="step2-text">
-        <div class="invitation-text">
-В воскресенье - приглашаю на свидание, слушать винил!
-
-Женя Чупров (режиссёр, сценарист, коллекционер) поставит пластинки: современный джаз, хип-хоп, R&B, соул - всё на стыке жанров. А еще инди нулевых и немного британской меланхолии.
-
-Выпьем кофя, поедим кексов и поцалуемся!
-        </div>
-        <button class="btn btn-vibe" id="btn-ura" onclick="acceptStep2()">урааа!</button>
-      </div>
-
-      <!-- Этап 4: Детали + кнопка Цалую! -->
-      <div class="notification hidden" id="step3">
-        <div class="event-details">
-          Когда: 30.08 • 16:00<br />
-          Где: «Блок», Семакова 20к1
-        </div>
-        <button class="btn" id="btn-kiss" onclick="sendKisses()">цалую!</button>
-      </div>
-
+      <div class="card-right">●</div>
     </div>
+
   </div>
 
-  <script>
-    const chat = document.getElementById('chat');
-
-    function scrollToBottom() {
-      setTimeout(() => {
-        chat.scrollTop = chat.scrollHeight;
-      }, 50);
-    }
-
-    // Клик на "Принять"
-    function acceptStep1() {
-      document.getElementById('btn-accept').style.display = 'none';
-
-      // Показываем второе изображение
-      const step2Img = document.getElementById('step2-img');
-      step2Img.classList.remove('hidden');
-      scrollToBottom();
-
-      // Через 1 секунду приходит текстовое сообщение
-      setTimeout(() => {
-        const step2Text = document.getElementById('step2-text');
-        step2Text.classList.remove('hidden');
-        scrollToBottom();
-      }, 1000);
-    }
-
-    // Клик на "урааа!"
-    function acceptStep2() {
-      const btnUra = document.getElementById('btn-ura');
-      btnUra.classList.remove('btn-vibe');
-      btnUra.style.display = 'none';
-
-      const step3 = document.getElementById('step3');
-      step3.classList.remove('hidden');
-      scrollToBottom();
-    }
-
-    // Клик на "цалую!" — анимация поцелуйчиков
-    function sendKisses() {
-      const phone = document.getElementById('phone');
-      const emojis = ['💋', '😘', '💖', '💌', '✨'];
-
-      for (let i = 0; i < 30; i++) {
-        const kiss = document.createElement('div');
-        kiss.className = 'kiss-particle';
-        kiss.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-
-        // Начальная позиция снизу экрана
-        kiss.style.left = (20 + Math.random() * 60) + '%';
-        kiss.style.bottom = '80px';
-
-        // Рандомные векторы полета
-        const dx = (Math.random() - 0.5) * 300 + 'px';
-        const dy = -(200 + Math.random() * 400) + 'px';
-        const dr = (Math.random() - 0.5) * 90 + 'deg';
-
-        kiss.style.setProperty('--dx', dx);
-        kiss.style.setProperty('--dy', dy);
-        kiss.style.setProperty('--dr', dr);
-
-        phone.appendChild(kiss);
-
-        // Удаление элементов после завершения анимации
-        setTimeout(() => {
-          kiss.remove();
-        }, 2000);
-      }
-    }
-  </script>
 </body>
 </html>
